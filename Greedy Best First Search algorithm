@@ -1,0 +1,76 @@
+class Node {
+    constructor(name, heuristic) {
+        this.name = name;
+        this.heuristic = heuristic;
+    }
+}
+
+// Priority Queue based on heuristic (min-heap)
+class PriorityQueue {
+    constructor() {
+        this.nodes = [];
+    }
+
+    enqueue(node) {
+        this.nodes.push(node);
+        this.nodes.sort((a, b) => a.heuristic - b.heuristic);
+    }
+
+    dequeue() {
+        return this.nodes.shift();
+    }
+
+    isEmpty() {
+        return this.nodes.length === 0;
+    }
+}
+
+function greedyBestFirstSearch(graph, heuristics, start, goal) {
+    const visited = new Set();
+    const pq = new PriorityQueue();
+
+    pq.enqueue(new Node(start, heuristics[start]));
+
+    while (!pq.isEmpty()) {
+        const current = pq.dequeue().name;
+
+        if (visited.has(current)) continue;
+        visited.add(current);
+
+        console.log("Visited:", current);
+
+        if (current === goal) {
+            console.log("Goal reached!");
+            return;
+        }
+
+        for (let neighbor of graph[current] || []) {
+            if (!visited.has(neighbor)) {
+                pq.enqueue(new Node(neighbor, heuristics[neighbor]));
+            }
+        }
+    }
+
+    console.log("Goal not reachable.");
+}
+
+const graphing = {
+    A: ["B", "C"],
+    B: ["D"],
+    C: ["E"],
+    D: [],
+    E: [],     // <-- F is not connected to anything
+    F: []      // <-- Goal node, unreachable
+};
+
+const heuristicsae = {
+    A: 6,
+    B: 4,
+    C: 5,
+    D: 2,
+    E: 3,
+    F: 0
+};
+
+// Run the algorithm
+greedyBestFirstSearch(graphing, heuristicsae, "B", "F");
