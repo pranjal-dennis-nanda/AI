@@ -1,0 +1,75 @@
+class Node{
+    constructor(name,heuristic)
+    {
+        this.name=name
+        this.heuristic=heuristic
+    }
+}
+class PriorityQueue{
+    constructor()
+    {
+        this.nodes=[]
+    }
+    enqueue(node)
+    {
+        this.nodes.push(node)
+        this.nodes.sort((a,b)=>a.heuristic-b.heuristic)
+    }
+    dequeue()
+    {
+       return this.nodes.shift()
+    }
+    isEmpty()
+    {
+       return this.nodes.length===0
+    }
+}
+function BestFirstSearch(graphs,heuristics,start,goal)
+{
+    
+    const pq=new PriorityQueue()
+    const visited=new Set()
+      pq.enqueue(new Node(start,heuristics[start]))
+    while(!pq.isEmpty()){
+    let current=pq.dequeue().name
+    if(visited.has(current)) {
+        continue
+    }
+    visited.add(current)
+    console.log('Visited',current)
+    if(current === goal)
+    {
+        console.log('Goal reached')
+        return
+    }
+    for(let neighbour of graphs[current])
+    {
+        if(!visited.has(neighbour))
+        {
+        pq.enqueue(new Node(neighbour,heuristics[neighbour]))
+        }
+    }
+}
+    console.log('Goal not found for the given node path')
+    
+}
+const graph = {
+    A: ["B", "C"],
+    B: ["D", "E"],
+    C: ["F"],
+    D: [],
+    E: ["F"],
+    F: []
+};
+
+const heuristic = {
+    A: 6,
+    B: 4,
+    C: 5,
+    D: 2,
+    E: 3,
+    F: 0
+};
+
+BestFirstSearch(graph, heuristic, "B", "F");
+
